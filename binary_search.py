@@ -26,7 +26,7 @@ def find_smallest_positive(xs):
         if len(xs) == 0:
             return None
         if xs[left] > 0:
-            return xs[left]
+            return left
         if xs[right] < 0:
             return None
         if xs[mid] > 0:
@@ -81,7 +81,7 @@ def _small_lowest_index(xs,x):
             left = mid+1
         if x == xs[mid]:
             right = mid-1
-            if xs[mid-1]!=x:
+            if xs[mid-1]!=x or mid == 0:
                 return mid
             else:
                 return go(left,right)
@@ -109,7 +109,7 @@ def _big_lowest_index(xs,x):
             left = mid+1
         if x == xs[mid]:
             left = mid+1
-            if xs[mid+1]!=x:
+            if mid == (len(xs)-1) or  xs[mid+1]!= x:
                 return mid
             else:
                 return go(left,right)
@@ -139,7 +139,9 @@ def count_repeats(xs, x):
     0
     '''
     if _included(xs, x) == True:
-        return (_big_lowest_index(xs,x)-_small_lowest_index(xs,x))+1
+        high = _big_lowest_index(xs, x)
+        small = _small_lowest_index(xs, x)
+        return (high  - small)+ 1
     else:
         return 0
  

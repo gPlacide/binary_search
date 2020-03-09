@@ -1,5 +1,7 @@
 #!/bin/python3
 
+import random
+
 def find_smallest_positive(xs):
     '''
     Assume that xs is a list of numbers sorted from LOWEST to HIGHEST.
@@ -48,18 +50,23 @@ def _included(xs, x):
     '''
     left =0
     right = len(xs)-1
+    
+    if len(xs) == 0:
+        return False
 
     def go(left,right):
         mid = (left+right)//2
-
+        
+        if right == left and xs[right] != x:
+            return False
         if x > xs[mid]:
             right = mid-1
-        if x < xs[mid]:
+            return go(left,right)
+        elif x < xs[mid]:
             left = mid+1
-        if x == xs[mid]:
-            return True
+            return go(left,right)
         else:
-            return False
+            return True
     return go(left,right)
 
 def _small_lowest_index(xs,x):
@@ -77,9 +84,11 @@ def _small_lowest_index(xs,x):
         
         if x > xs[mid]:
             right = mid-1
-        if x < xs[mid]:
+            return go(left,right)
+        elif x < xs[mid]:
             left = mid+1
-        if x == xs[mid]:
+            return go(left,right)
+        else:
             right = mid-1
             if xs[mid-1]!=x or mid == 0:
                 return mid
@@ -105,9 +114,13 @@ def _big_lowest_index(xs,x):
         
         if x > xs[mid]:
             right = mid-1
-        if x < xs[mid]:
+            return go(left,right)
+
+        elif x < xs[mid]:
             left = mid+1
-        if x == xs[mid]:
+            return go(left,right)
+        else:
+        
             left = mid+1
             if mid == (len(xs)-1) or  xs[mid+1]!= x:
                 return mid
@@ -138,10 +151,12 @@ def count_repeats(xs, x):
     >>> count_repeats([1, 2, 3], 4)
     0
     '''
-    if _included(xs, x) == True:
-        high = _big_lowest_index(xs, x)
+    
+
+    if _included(xs, x):
+        high =  _big_lowest_index(xs, x)
         small = _small_lowest_index(xs, x)
-        return (high  - small)+ 1
+        return (high  - small) + 1
     else:
         return 0
  
@@ -168,4 +183,14 @@ def argmin(f, lo, hi, epsilon=1e-3):
     >>> argmin(lambda x: (x-5)**2, -20, 0)
     -0.00016935087808430278
     '''
-
+    
+    if abs(hi - lo) < epsilon:
+        return (lo+hi)/2
+    else:
+        m1 = random.uniform(lo, hi)
+        m2 = random.uniform(lo, hi)
+        
+        if f(m1) < f(m2):
+            return argmin(f, m1, hi, epsilon)
+        else:
+            return argmin(f, lo, m2, epsilon)

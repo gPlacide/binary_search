@@ -184,13 +184,15 @@ def argmin(f, lo, hi, epsilon=1e-3):
     -0.00016935087808430278
     '''
     
-    if abs(hi - lo) < epsilon:
+    if hi - lo < epsilon:
         return (lo+hi)/2
     else:
-        m1 = random.uniform(lo, hi)
-        m2 = random.uniform(lo, hi)
+        m1 = lo + (hi-lo)/4
+
+        m2 = hi - (hi-lo)/2
         
         if f(m1) < f(m2):
-            return argmin(f, m1, hi, epsilon)
-        else:
             return argmin(f, lo, m2, epsilon)
+
+        else:
+            return argmin(f, m1, hi, epsilon)
